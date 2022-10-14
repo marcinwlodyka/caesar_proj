@@ -1,5 +1,7 @@
 <script>
   import arrow from './assets/arrow-down-solid.svg';
+  import plus from './assets/plus-solid.svg';
+  import minus from './assets/minus-solid.svg';
 
   const chars = 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ'
     .toLocaleLowerCase()
@@ -56,20 +58,13 @@
       .join('');
   };
 
-  const handleOffset = (event) => {
-    const { target } = event;
-    const inputEvent = new Event('input');
-
-    if (target.value > chars.length - 1) {
-      target.value = chars.length - 1;
-
-      target.dispatchEvent(inputEvent);
+  const handleOffset = () => {
+    if (offset > chars.length - 1) {
+      offset = chars.length - 1;
     }
 
-    if (target.value < 1) {
-      target.value = Math.abs(target.value) || 1;
-
-      target.dispatchEvent(inputEvent);
+    if (offset < 1) {
+      offset = Math.abs(offset) || 1;
     }
 
     if (isDecrypt) {
@@ -89,9 +84,12 @@
 
       <h2>indeks: 13860</h2>
 
-      <p>podpowiedź: kliknij na strzałki aby przejść z szyfrowania na deszyfrowania</p>
+      <p>
+        podpowiedź: kliknij na strzałki aby przejść z szyfrowania na
+        deszyfrowania
+      </p>
 
-      <button on:click={() => (isOpen = false)}> close </button>
+      <button on:click={() => (isOpen = false)}> zamknij </button>
     </div>
   {/if}
 
@@ -118,14 +116,34 @@
       <div>
         <label for="offset">przesunięcie:</label>
 
-        <input
-          type="number"
-          name="offset"
-          id="offset"
-          min="1"
-          bind:value={offset}
-          on:input={handleOffset}
-        />
+        <div class="offset">
+          <img
+            src={minus}
+            alt="minus"
+            on:click={() => {
+              offset--;
+              handleOffset();
+            }}
+          />
+
+          <input
+            type="number"
+            name="offset"
+            id="offset"
+            min="1"
+            bind:value={offset}
+            on:input={handleOffset}
+          />
+
+          <img
+            src={plus}
+            alt="plus"
+            on:click={() => {
+              offset++;
+              handleOffset();
+            }}
+          />
+        </div>
       </div>
 
       <img
@@ -155,7 +173,7 @@
     --grey-dark: rgb(10, 10, 10);
 
     --space-sm: 0.25rem;
-    --space-md: 0.75rem;
+    --space-md: 0.9rem;
     --space-lg: 2.5rem;
 
     --border: 0.35rem solid white;
@@ -244,6 +262,10 @@
 
   img {
     width: 2.5rem;
+    aspect-ratio: 1;
+    padding: var(--space-sm);
+
+    border-radius: 0.25rem;
 
     transition: var(--trans);
     cursor: pointer;
@@ -251,6 +273,11 @@
 
   img.up {
     transform: rotate(180deg);
+  }
+
+  img:active {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: var(--rounded);
   }
 
   input::-webkit-outer-spin-button,
@@ -298,5 +325,15 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-md);
+  }
+
+  .offset {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .offset > img {
+    width: 1.5rem;
   }
 </style>
